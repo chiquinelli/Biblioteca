@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Biblioteca.DataContext;
+using Biblioteca.Helpers;
 
 namespace Biblioteca.Controllers
 {
@@ -29,36 +30,36 @@ namespace Biblioteca.Controllers
         // GET: Livro/Create
         public ActionResult Create()
         {
-            List<Autor> lAutores = new List<Autor>();
-            lAutores = db.Autores.ToList();
+            //List<Autor> lAutores = new List<Autor>();
+            //lAutores = db.Autores.ToList();
 
-            List<Categoria> lCategoria = new List<Categoria>();
-            lCategoria = db.Categorias.ToList();
+            //List<Categoria> lCategoria = new List<Categoria>();
+            //lCategoria = db.Categorias.ToList();
 
 
-            List<SelectListItem> ListaCategorias = lCategoria.ConvertAll(a =>
-            {
-                return new SelectListItem()
-                {
-                    Text = a.Nome,  // texto que vira no dropdown
-                    Value = a.Id.ToString(), // valor no dropdown
-                    Selected = false //nenhum vira selecionado
-                };
-            });
+            //List<SelectListItem> ListaCategorias = lCategoria.ConvertAll(a =>
+            //{
+            //    return new SelectListItem()
+            //    {
+            //        Text = a.Nome,  // texto que vira no dropdown
+            //        Value = a.Id.ToString(), // valor no dropdown
+            //        Selected = false //nenhum vira selecionado
+            //    };
+            //});
 
-            //Aqui estou preenchendo essa varlAutores com valores do banco para listar num dropdown
-            List<SelectListItem> listaAutores = lAutores.ConvertAll(a =>
-            {
-                return new SelectListItem()
-                {
-                    Text = a.Nome,  // texto que vira no dropdown
-                    Value = a.Id.ToString(), // valor no dropdown
-                    Selected = false //nenhum vira selecionado
-                };
-            });
+            ////Aqui estou preenchendo essa varlAutores com valores do banco para listar num dropdown
+            //List<SelectListItem> listaAutores = lAutores.ConvertAll(a =>
+            //{
+            //    return new SelectListItem()
+            //    {
+            //        Text = a.Nome,  // texto que vira no dropdown
+            //        Value = a.Id.ToString(), // valor no dropdown
+            //        Selected = false //nenhum vira selecionado
+            //    };
+            //});
             //Viewbag irá intermediar os dados entre o controler e a view
-            @ViewBag.Autores = listaAutores;
-            @ViewBag.Categorias = ListaCategorias;
+            @ViewBag.Autores = RetornaSelectListItem.Autores();
+            @ViewBag.Categorias = RetornaSelectListItem.Categorias() ;
 
             return View();
         }
@@ -74,13 +75,16 @@ namespace Biblioteca.Controllers
                     //aqui estou dizendo que o banco vai salvar na tabela livro tudo passado no parametro livro
                     db.Livros.Add(livro);
                     db.SaveChanges();
-
                 return RedirectToAction("Index");
+
                 }
+                @ViewBag.Autores = RetornaSelectListItem.Autores();
+                @ViewBag.Categorias = RetornaSelectListItem.Categorias();
+
                 return View(livro);
 
             }
-            catch
+            catch (Exception e)
             {
                 return View();
             }
